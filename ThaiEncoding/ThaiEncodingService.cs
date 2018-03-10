@@ -1,30 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Chonla.ThaiEncoding {
     public static class Convert {
-        public static byte[] ToTIS620(string utf8String) {
-            List<byte> buffer = new List<byte>();
-            byte utf8Identifier = 224;
-            for (var i = 0; i < utf8String.Length; i++) {
-                string utf8Char = utf8String.Substring(i, 1);
-                byte[] utf8CharBytes = Encoding.UTF8.GetBytes(utf8Char);
-                if (utf8CharBytes.Length > 1 && utf8CharBytes[0] == utf8Identifier) {
-                    var tis620Char = (utf8CharBytes[2] & 0x3F);
-                    tis620Char |= ((utf8CharBytes[1] & 0x3F) << 6);
-                    tis620Char |= ((utf8CharBytes[0] & 0x0F) << 12);
-                    tis620Char -= (0x0E00 + 0xA0);
-                    byte tis620Byte = (byte)tis620Char;
-                    tis620Byte += 0xA0;
-                    tis620Byte += 0xA0;
+        private const byte UTF8_IDENTIFIER = 224;
 
-                    buffer.Add(tis620Byte);
-                } else {
-                    buffer.Add(utf8CharBytes[0]);
-                }
-            }
-            return buffer.ToArray();
+        public static byte[] ToTIS620(string utf8String) {
+            return utf8String
+                    .ToCharArray()
+                    .Select(utf8Char => ParseToTIS620Byte(utf8Char))
+                    .ToArray();
         }
 
         public static byte[] ToUTF8(byte[] tis620Bytes) {
@@ -49,6 +36,38 @@ namespace Chonla.ThaiEncoding {
             }
             return buffer.ToArray();
         }
-    }
 
+        #region Private methods
+
+        private static byte ParseToTIS620Byte(char utf8Char)
+        {
+            var utf8CharBytes = Encoding.UTF8.GetBytes(utf8Char.ToString());
+            if (HasToConvertToTIS620Byte(utf8CharBytes))
+                return ParseToTIS620Byte(utf8CharBytes);
+
+            return utf8CharBytes[0];
+        }
+
+        private static bool HasToConvertToTIS620Byte(byte[] utf8CharBytes)
+        {
+            return (utf8CharBytes.Length > 2
+                    && utf8CharBytes[0] == UTF8_IDENTIFIER);
+        }
+
+        private static byte ParseToTIS620Byte(byte[] utf8CharBytes)
+        {
+            var tis620Char = (utf8CharBytes[2] & 0x3F);
+            tis620Char |= ((utf8CharBytes[1] & 0x3F) << 6);
+            tis620Char |= ((utf8CharBytes[0] & 0x0F) << 12);
+            tis620Char -= (0x0E00 + 0xA0);
+
+            var tis620Byte = (byte)tis620Char;
+            tis620Byte += 0xA0;
+            tis620Byte += 0xA0;
+
+            return tis620Byte;
+        }
+
+        #endregion
+    }
 }
