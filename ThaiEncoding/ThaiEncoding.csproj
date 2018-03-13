@@ -3,7 +3,7 @@
 <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Chonla.ThaiEncoding</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.0.1</PackageVersion>
     <Author>Chonlasith Jucksriporn</Author>
     <Description>Thai Character Set Encoding Converter</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
