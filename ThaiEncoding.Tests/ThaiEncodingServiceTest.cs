@@ -1,106 +1,133 @@
 using System;
 using Xunit;
 using Chonla.ThaiEncoding;
+using System.Collections.Generic;
 
 namespace Chonla.ThaiEncoding.Tests
 {
     public class ThaiEncodingServiceTest
     {
+        private static class DataSource
+        {
+            public static IEnumerable<object[]> ThaiCharacters => new List<object[]>
+            {
+                new object[] {"ก", 0xa1}
+                , new object[] {"ข", 0xa2}
+                , new object[] {"ฃ", 0xa3}
+                , new object[] {"ค", 0xa4}
+                , new object[] {"ฅ", 0xa5}
+                , new object[] {"ฆ", 0xa6}
+                , new object[] {"ง", 0xa7}
+                , new object[] {"จ", 0xa8}
+                , new object[] {"ฉ", 0xa9}
+                , new object[] {"ช", 0xaa}
+                , new object[] {"ซ", 0xab}
+                , new object[] {"ฌ", 0xac}
+                , new object[] {"ญ", 0xad}
+                , new object[] {"ฎ", 0xae}
+                , new object[] {"ฏ", 0xaf}
+                , new object[] {"ฐ", 0xb0}
+                , new object[] {"ฑ", 0xb1}
+                , new object[] {"ฒ", 0xb2}
+                , new object[] {"ณ", 0xb3}
+                , new object[] {"ด", 0xb4}
+                , new object[] {"ต", 0xb5}
+                , new object[] {"ถ", 0xb6}
+                , new object[] {"ท", 0xb7}
+                , new object[] {"ธ", 0xb8}
+                , new object[] {"น", 0xb9}
+                , new object[] {"บ", 0xba}
+                , new object[] {"ป", 0xbb}
+                , new object[] {"ผ", 0xbc}
+                , new object[] {"ฝ", 0xbd}
+                , new object[] {"พ", 0xbe}
+                , new object[] {"ฟ", 0xbf}
+                , new object[] {"ภ", 0xc0}
+                , new object[] {"ม", 0xc1}
+                , new object[] {"ย", 0xc2}
+                , new object[] {"ร", 0xc3}
+                , new object[] {"ฤ", 0xc4}
+                , new object[] {"ล", 0xc5}
+                , new object[] {"ฦ", 0xc6}
+                , new object[] {"ว", 0xc7}
+                , new object[] {"ศ", 0xc8}
+                , new object[] {"ษ", 0xc9}
+                , new object[] {"ส", 0xca}
+                , new object[] {"ห", 0xcb}
+                , new object[] {"ฬ", 0xcc}
+                , new object[] {"อ", 0xcd}
+                , new object[] {"ฮ", 0xce}
+                , new object[] {"ฯ", 0xcf}
+                , new object[] {"ะ", 0xd0}
+                , new object[] {"ั", 0xd1}
+                , new object[] {"า", 0xd2}
+                , new object[] {"ำ", 0xd3}
+                , new object[] {"ิ", 0xd4}
+                , new object[] {"ี", 0xd5}
+                , new object[] {"ึ", 0xd6}
+                , new object[] {"ื", 0xd7}
+                , new object[] {"ุ", 0xd8}
+                , new object[] {"ู", 0xd9}
+                , new object[] {"ฺ", 0xda}
+                , new object[] {"฿", 0xdf}
+                , new object[] {"เ", 0xe0}
+                , new object[] {"แ", 0xe1}
+                , new object[] {"โ", 0xe2}
+                , new object[] {"ใ", 0xe3}
+                , new object[] {"ไ", 0xe4}
+                , new object[] {"ๆ", 0xe6}
+                , new object[] {"็", 0xe7}
+                , new object[] {"่", 0xe8}
+                , new object[] {"้", 0xe9}
+                , new object[] {"๊", 0xea}
+                , new object[] {"๋", 0xeb}
+                , new object[] {"์", 0xec}
+                , new object[] {"ํ", 0xed}
+                , new object[] {"๐", 0xf0}
+                , new object[] {"๑", 0xf1}
+                , new object[] {"๒", 0xf2}
+                , new object[] {"๓", 0xf3}
+                , new object[] {"๔", 0xf4}
+                , new object[] {"๕", 0xf5}
+                , new object[] {"๖", 0xf6}
+                , new object[] {"๗", 0xf7}
+                , new object[] {"๘", 0xf8}
+                , new object[] {"๙", 0xf9}
+            };
+        }
+
         [Fact]
         public void TestNonThaiCharacterShouldBeConvertCorrectly()
         {
-            byte[] result = Convert.ToTIS620("a");
-            Assert.Single(result);
-            Assert.Equal(new byte[]{ 0x61 }, result);
+            var result = WhenAGivenCharacterIsConvertedToTIS620("a");
+
+            ThenTheResultShouldBeOneByte(result);
+            ThenTheResultShouldBeEqualTo(new byte[]{ 0x61 }, result);
         }
 
         [Theory]
-        [InlineData("ก", 0xa1)]
-        [InlineData("ข", 0xa2)]
-        [InlineData("ฃ", 0xa3)]
-        [InlineData("ค", 0xa4)]
-        [InlineData("ฅ", 0xa5)]
-        [InlineData("ฆ", 0xa6)]
-        [InlineData("ง", 0xa7)]
-        [InlineData("จ", 0xa8)]
-        [InlineData("ฉ", 0xa9)]
-        [InlineData("ช", 0xaa)]
-        [InlineData("ซ", 0xab)]
-        [InlineData("ฌ", 0xac)]
-        [InlineData("ญ", 0xad)]
-        [InlineData("ฎ", 0xae)]
-        [InlineData("ฏ", 0xaf)]
-        [InlineData("ฐ", 0xb0)]
-        [InlineData("ฑ", 0xb1)]
-        [InlineData("ฒ", 0xb2)]
-        [InlineData("ณ", 0xb3)]
-        [InlineData("ด", 0xb4)]
-        [InlineData("ต", 0xb5)]
-        [InlineData("ถ", 0xb6)]
-        [InlineData("ท", 0xb7)]
-        [InlineData("ธ", 0xb8)]
-        [InlineData("น", 0xb9)]
-        [InlineData("บ", 0xba)]
-        [InlineData("ป", 0xbb)]
-        [InlineData("ผ", 0xbc)]
-        [InlineData("ฝ", 0xbd)]
-        [InlineData("พ", 0xbe)]
-        [InlineData("ฟ", 0xbf)]
-        [InlineData("ภ", 0xc0)]
-        [InlineData("ม", 0xc1)]
-        [InlineData("ย", 0xc2)]
-        [InlineData("ร", 0xc3)]
-        [InlineData("ฤ", 0xc4)]
-        [InlineData("ล", 0xc5)]
-        [InlineData("ฦ", 0xc6)]
-        [InlineData("ว", 0xc7)]
-        [InlineData("ศ", 0xc8)]
-        [InlineData("ษ", 0xc9)]
-        [InlineData("ส", 0xca)]
-        [InlineData("ห", 0xcb)]
-        [InlineData("ฬ", 0xcc)]
-        [InlineData("อ", 0xcd)]
-        [InlineData("ฮ", 0xce)]
-        [InlineData("ฯ", 0xcf)]
-        [InlineData("ะ", 0xd0)]
-        [InlineData("ั", 0xd1)]
-        [InlineData("า", 0xd2)]
-        [InlineData("ำ", 0xd3)]
-        [InlineData("ิ", 0xd4)]
-        [InlineData("ี", 0xd5)]
-        [InlineData("ึ", 0xd6)]
-        [InlineData("ื", 0xd7)]
-        [InlineData("ุ", 0xd8)]
-        [InlineData("ู", 0xd9)]
-        [InlineData("ฺ", 0xda)]
-        [InlineData("฿", 0xdf)]
-        [InlineData("เ", 0xe0)]
-        [InlineData("แ", 0xe1)]
-        [InlineData("โ", 0xe2)]
-        [InlineData("ใ", 0xe3)]
-        [InlineData("ไ", 0xe4)]
-        [InlineData("ๆ", 0xe6)]
-        [InlineData("็", 0xe7)]
-        [InlineData("่", 0xe8)]
-        [InlineData("้", 0xe9)]
-        [InlineData("๊", 0xea)]
-        [InlineData("๋", 0xeb)]
-        [InlineData("์", 0xec)]
-        [InlineData("ํ", 0xed)]
-        [InlineData("๐", 0xf0)]
-        [InlineData("๑", 0xf1)]
-        [InlineData("๒", 0xf2)]
-        [InlineData("๓", 0xf3)]
-        [InlineData("๔", 0xf4)]
-        [InlineData("๕", 0xf5)]
-        [InlineData("๖", 0xf6)]
-        [InlineData("๗", 0xf7)]
-        [InlineData("๘", 0xf8)]
-        [InlineData("๙", 0xf9)]
+        [MemberData(nameof(DataSource.ThaiCharacters), MemberType = typeof(DataSource))]
         public void TestThaiCharacterShouldBeConvertCorrectly(string input, byte expected) {
-            byte[] result = Convert.ToTIS620(input);
+
+            var result = WhenAGivenCharacterIsConvertedToTIS620(input);
+
+            ThenTheResultShouldBeOneByte(result);
+            ThenTheResultShouldBeEqualTo(new byte[]{ expected }, result);
+        }
+
+        private byte[] WhenAGivenCharacterIsConvertedToTIS620(string input)
+        {
+            return Convert.ToTIS620(input);
+        }
+
+        private void ThenTheResultShouldBeOneByte(byte[] result)
+        {
             Assert.Single(result);
-            Assert.Equal(new byte[]{ expected }, result);
+        }
+
+        private void ThenTheResultShouldBeEqualTo(byte[] expected, byte[] result)
+        {
+            Assert.Equal(expected, result);
         }
     }
 }
