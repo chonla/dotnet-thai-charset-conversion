@@ -4,12 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Chonla.ThaiEncoding</PackageId>
     <PackageVersion>1.0.1</PackageVersion>
-    <Author>Chonlasith Jucksriporn</Author>
+    <Authors>Chonlasith Jucksriporn</Authors>
     <Description>Thai Character Set Encoding Converter</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNote>First Release</PackageReleaseNote>
     <Copyright>Copyright 2018 (c) Chonlasith Jucksriporn</Copyright>
     <PackageTags>thai characterset encoding convert</PackageTags>
+    <PackageProjectUrl>https://github.com/chonla/dotnet-thai-charset-conversion</PackageProjectUrl>
   </PropertyGroup>
 
 </Project>
